@@ -13,6 +13,7 @@ Registering mixins and variables
 
   // the mixin can have any number of arguments provided when the mixin is referenced
   css.mixin('vendor-prefix', function(name, value) {
+    // for example only, a smarter impl would eval the user agent to include the appropriate prefix
     var rtn = {};
     // if you have underscore
     _.each(['O', 'Webkit', 'ms', 'Moz'], function(prefix) {
