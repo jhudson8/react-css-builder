@@ -1,0 +1,30 @@
+{
+  "name": "react-css-builder",
+  "version": "0.0.1",
+  "description": "CSS builder to create react component style objects",
+  "main": "react-css-builder.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhudson8/react-css-builder.git"
+  },
+  "keywords": [
+    "react",
+    "css"
+  ],
+  "author": "Joe Hudson <joehud@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jhudson8/react-css-builder/issues"
+  },
+  "homepage": "https://github.com/jhudson8/react-css-builder",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.1.0"
+  }
+}
