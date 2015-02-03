@@ -12,10 +12,14 @@ Registering mixins and variables
   var css = require('react-css-builder');
 
   // the mixin can have any number of arguments provided when the mixin is referenced
-  css.mixin('mixin-name', function(arg1, arg2, ...) {
-    return {
-      // any attributes will be included with the styleset results
-    };
+  css.mixin('vendor-prefix', function(name, value) {
+    var rtn = {};
+    // if you have underscore
+    _.each(['O', 'Webkit', 'ms', 'Moz'], function(prefix) {
+      rtn[prefix + name] = value;
+    });
+    rtn[name] = value;
+    return rtn;
   });
 
   // add variables that can be referenced in stylesets using this.get("varName");
