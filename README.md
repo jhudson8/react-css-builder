@@ -3,7 +3,7 @@ CSS builder for creating inline react component style objects
 
 If you want React to do native well, you need to use inline styles.  But, you can still get the DRY and maintainability benefits of an external stylesheet with react-css-builder.
 
-You can create a javascript stylesheet  that is similary to what you would see with a CSS precompiler but you can actually use variablees calculated at runtime!
+You can create a javascript stylesheet similar to what you would see with a CSS precompiler but you can actually use variablees calculated at runtime!
 
 A few examples
 
