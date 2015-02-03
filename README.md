@@ -62,25 +62,31 @@ module.exports = require('react-css-builder').register('my-namespace', {
 
 To use the class references
 ```
-  var css = require('path/to/my/css/file');
   // eager fetch the styleset if possible
-  var myStyleset = css.css('myCssClass');
+  var css = require('path/to/my/css/file');
+
+  // simple styleset reference with no variables or additional attributes
+  var simpleStyleset = css.css('myCssClass');
+
   // to provide variables and/or additional attributes (notice the method is "get" instead of "css")
-  var myStylesetWithVarAndAdditionalAttributes = css.get('fancierCssClass')
-    // add variables that can be referenced with styleset functions and/or mixins
+  var advancedStyleset = css.get('fancierCssClass')
+
+    // add variables that can be referenced using this.get("varName")
     .vars({
       border: 1
     })
+
     // add additional attributes defined here
     .attr({
       fontFamily: 'arial'
     })
+
     // get the styleset (now we use the "css" function)
     .css();
 
   ...
     render: function() {
-      return <div style={myStylesetWithVarAndAdditionalAttributes}>Hello</div>
+      return <div style={advancedStyleset}>Hello</div>
     }
   }
 ```
