@@ -9,6 +9,8 @@ A few examples
 
 Registering mixins and variables
 ```
+  var css = require('react-css-builder');
+
   // the mixin can have any number of arguments provided when the mixin is referenced
   css.mixin('mixin-name', function(arg1, arg2, ...) {
     return {
