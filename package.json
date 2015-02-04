@@ -1,6 +1,6 @@
 {
   "name": "react-css-builder",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "CSS builder to create react component style objects",
   "main": "react-css-builder.js",
   "directories": {
