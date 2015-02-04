@@ -6,6 +6,20 @@ If you want React to do native well, you need to use inline styles.  But, you ca
 
 You can create a javascript stylesheet similar to what you would see with a CSS precompiler but you can actually use variables calculated at runtime!
 
+```
+// *very* simple example - more advance capabilities are not demonstrated here
+var stylesheet = require('react-css-builder').register({
+  myClass: {
+    color: 'white'
+  }
+});
+
+var styleAttributes = stylesheet.css('myClass');
+...
+render: function() {
+  return <div style={styleAttributes}/>
+}
+```
 
 Installation
 --------------
