@@ -247,7 +247,50 @@ var stylesheet = require('...').register({
 
 Sections
 ----------
-### Styleset Path Selectors
+### Usage
+#### Creating a stylesheet
+The [register](#project/jhudson8/react-css-builder/method/react-css-builder/register) method is used to create a new stylesheet that can be used.
+
+```
+module.exports = require('react-css-builder').register('optional-namespace', {
+  // include any stylesets
+  myCssClass: {
+    color: 'white'
+  }
+```
+
+#### Styleset Definitions
+We're using "styleset" as the term for attributes given to a specific CSS class.  Stylesets can be implemented in 3 different ways
+
+Standard attributes
+```
+  myClass: {
+    border: 'solid 1px #000'
+  }
+```
+
+Function returning standard attributes
+```
+  // we might do this if we want to access variables
+  myClass: function() {
+    border: this.get('border')
+  }
+```
+
+Function which returns results from a [StyleContext](#project/jhudson8/react-css-builder/package/StyleContext)
+```
+  // we might do this if we want to include other stylesets or use mixins
+  myClass: function(css) {
+    return css
+      .mixin(...)
+      .include(...)
+      .attr(...)
+      .val();
+  }
+```
+
+
+#### Styleset Path Selectors
 Multiple stylesets can be included with a single styleset reference.
 
 * Each styleset reference should be separated with a space or comma.
@@ -284,96 +327,67 @@ Matching a stylesheet like the following
 ```
 
 
-### Examples
+#### Mixins
+See [Mixins API](#project/jhudson8/react-css-builder/method/react-css-builder/mixin) to understand how to register mixins
 
-#### Registering mixins and variables
+Mixins can return any number of attributes that should be applied to a styleset.
+
 ```
-  var css = require('react-css-builder');
+  var stylesheet = require('react-css-builder').register({
 
-  // the mixin can have any number of arguments provided when the mixin is referenced
-  css.mixin('vendor-prefix', function(name, value) {
-
-    // for example only, a smarter impl would eval the user agent to include the appropriate prefix
-    var rtn = {};
-    // if you have underscore
-    _.each(['O', 'Webkit', 'ms', 'Moz'], function(prefix) {
-      rtn[prefix + name] = value;
-    });
-    rtn[name] = value;
-    return rtn;
-  });
-
-  // add variables that can be referenced in stylesets using this.get("varName");
-  css.vars({
-    foo: 'bar'
-  });
-```
-
-#### Creating a stylesheet
-```
-module.exports = require('react-css-builder').register('my-namespace', {
-  // use javascript-style humpback CSS here
-  myCssClass: {
-    color: 'white'
-  },
-
-  fancierCssClass: function(css) {
-    return css
-      // include the attributes from the "myCssClass" (in this namespace / css file)
-      .include('myCssClass')
-
-      // include the attributes from a class in another namespace (1st param to register method)
-      .include('another-namespace.anotherCssClass')
-
-      // include attributes from a mixin (vendor-prefix example can be seen later)
-      .mixin('vendor-prefix', 'border-radius', 3)
-
-      // add attitional styles
-      .val({
-        // you can reference global or class reference variables
-        background-color: this.get('backgroundColor'),
-        // or just use simple attributes
-        backgroundImage: ...
-      })
-  },
-
-  simpleReferenceTimeExecutionClass: function() {
-    // if don't need any registered variables or mixin use but just want to evaluate
-    // something when the styleset is referenced
-    return {
-      height: window.innerHeight + 'px'
-    };
-  }
-})
-```
-
-#### Using Class References
-```
-  // eager fetch the styleset if possible
-  var stylesheet = require('path/to/my/css/file');
-
-  // simple styleset reference with no variables or additional attributes
-  var simpleStyleset = css.css('myCssClass');
-
-  // to provide variables and/or additional attributes (notice the method is "get" instead of "css")
-  var advancedStyleset = stylesheet.get('fancierCssClass')
-
-    // add variables that can be referenced using this.get("varName")
-    .vars({
-      border: 1
-    })
-
-    // add additional attributes defined here
-    .attr({
-      fontFamily: 'arial'
-    })
-
-    // get the styleset (now we use the "css" function)
-    .css();
-
-  ...
-    render: function() {
-      return <div style={advancedStyleset}>Hello</div>
+    myClassUsingMixins: function(css) {
+      return css
+        .mixin('the-mixin-name', param1, param2, ...)
+        .attr({
+          // include any additional attributes
+        })
+        .val();
     }
-  }
+  });
+```
+
+
+#### Variables
+See [Variables API](#project/jhudson8/react-css-builder/method/react-css-builder/vars) to understand how to register variables
+
+Variables can be referenced in a styleset definition using ```this.get("varName")```
+```
+  var stylesheet = require('react-css-builder').register({
+
+    myClassUsingMixins: function() {
+      return {
+        border: this.get('border')
+      }
+    }
+  });
+
+  // variables can be set globally
+  require('react-css-builder').vars({ border: 'solid 2px #000'});
+
+  // variables can be set on a specific stylesheet
+  stylesheet.vars({ border: 'solid 2px #000'});
+
+  // variables can be set when referencing the styleset directly
+  var myStyle = stylesheet.get('myClassUsingMixins').vars({ border: 'solid 2px #000'}).css();
+```
+
+
+#### Includes
+It is possible to merge other styleset attributes using ```include```.  Stylesets can be referenced in the current stylesheet or in another stylesheet if the styleset name is prefixed with a ```.```.
+```
+  var stylesheet = require('react-css-builder').register({
+
+    someOtherClass: {
+      width: '100%'
+    },
+
+    myClassWithIncludes: function(css) {
+      return css
+        .include('someOtherClass')
+        .attr({
+          // include any additional attributes
+        })
+        .val();
+    }
+  });
 ```
