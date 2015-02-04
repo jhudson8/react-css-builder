@@ -33,14 +33,13 @@ API
 ### react-css-builder
 This is the object returned when calling ```require('react-css-builder')```
 
-
 #### register([namespace,] styleSet)
 * ***namespace***: (string) optional namespace used if any references will be made to another styleset from the styleset being registered
 * ***styleSet***: the object representing the set of styles (kind of like a stylesheet)
 
 Register a set of styles which are associated with an alias which can be referenced like a css class.
 
-Return the [CSSBuilder](#FIXME) object
+Return the [Stylesheet](#project/jhudson8/react-css-builder/package/Stylesheet) object
 
 ```
 module.exports = require('react-css-builder').register('some-namespace', {
@@ -53,7 +52,7 @@ module.exports = require('react-css-builder').register('some-namespace', {
   }
 });
 ```
-see [Advanced Stylesets](#FIXME) to see all available options including, importing external stylesets, using mixins, variable references and nested styles.
+see [Examples](#project/jhudson8/react-css-builder/section/Examples) to see all available options including, importing external stylesets, using mixins, variable references and nested styles.
 
 #### vars(varsObject)
 * ***varsObject***: a hash of variables to register which will be available to styleset rules (using this.get("varName")).
@@ -96,8 +95,9 @@ css.register('my-styleset', {
 });
 ```
 
-### StylesetBuilder
-This is the object returned when calling ```require('react-css-builder').register(...)```
+
+### Stylesheet
+This is the object returned when calling ```require('react-css-builder').register(...)
 
 #### css(className)
 * ***className***: return the styleset object matching the className key which can be used for associated with a React component ```style``` property.
@@ -125,7 +125,7 @@ stylesheet.css('panel.header'); // = {color: 'black'}
 
 Very much like the previously described ```css``` method but allows for additional variables and style attributes to be provided.  The ```css``` method is used to return the style response.
 
-Returns a [StyleSelector](#FIXME)
+Returns a [StylesetBuilder](#project/jhudson8/react-css-builder/package/StylesetBuilder)
 
 ```
 var stylesheet = require('...').register(...)
@@ -144,16 +144,16 @@ stylesheet.get('myStyle')
 * ***mixinName***: the name of the mixin
 * ***mixinFunction***: the mixin function which can take any number of arguments
 
-Exactly the same as [mixin](#FIXME) except that the mixin registered will *only* be accessable to this particular stylesheet.
+Exactly the same as [react-css-builder mixin](#project/jhudson8/react-css-builder/method/react-css-builder/mixin) except that the mixin registered will *only* be accessable to this particular stylesheet.
 
 #### vars(varsObject)
 * ***varsObject***: a hash of variables to register which will be available to styleset rules (using this.get("varName")).
 
-Exactly the same as [vars](#FIXME) except that the provided variables will *only* be accessable to this particular stylesheet.
+Exactly the same as [react-css-builder vars](l#project/jhudson8/react-css-builder/method/react-css-builder/vars) except that the provided variables will *only* be accessable to this particular stylesheet.
 
 
 ### StylesetBuilder
-This is the object returned when calling ```get``` from a [StylesetBuilder](#FIXME).  It is used to apply variables and attributes to a styleset request.
+This is the object returned when calling ```get``` from a [StylesetBuilder](#project/jhudson8/react-css-builder/package/StylesetBuilder).  It is used to apply variables and attributes to a styleset request.
 
 #### attr(styleAttributes)
 * ***styleAttributes***: Additional attributes that should be included with the attributes defined with the styleset defined by the class name.
