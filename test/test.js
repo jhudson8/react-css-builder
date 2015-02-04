@@ -27,6 +27,7 @@ var hierarchyTestCss = css.register('foo', {
 
 var hierarchyTestCss = css.register('hierarchy', {
   top: {
+    attributes: {},
     bottom: {
       attributes: {
         test: 1

@@ -247,6 +247,43 @@ var stylesheet = require('...').register({
 
 Sections
 ----------
+### Styleset Path Selectors
+Multiple stylesets can be included with a single styleset reference.
+
+* Each styleset reference should be separated with a space or comma.
+* Nested stylesets should be sparated with ```.```.
+* multiple nested styleset references have a shorthand of parent[child1 {space or comma} child2 ...]
+
+For example
+```
+foo, a[b c] d[e,f], bar
+```
+would result in the following stylets
+```
+['foo', 'a.b', 'a.c', 'd.e', 'd.f', 'bar']
+```
+Matching a stylesheet like the following
+```
+{
+  foo: { ... },
+
+  a: {
+    attributes: { ... }
+    b: { ... },
+    c: { ... }
+  },
+
+  d: {
+    attributes: { ... },
+    e: { ... },
+    f: { ... }
+  },
+
+  bar: { ... }
+}
+```
+
+
 ### Examples
 
 #### Registering mixins and variables

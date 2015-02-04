@@ -1,13 +1,20 @@
   // utility / helper functions
 
+  // iterate the attributes of an object
+  function _each(obj, callback) {
+    for (var name in obj) {
+      if (obj.hasOwnProperty(name)) {
+        callback(obj[name], name);
+      }
+    }
+  }
+
   // extend the attributes of src into target
   function  _extend(target, src) {
     if (src) {
-      for (var name in src) {
-        if (src.hasOwnProperty(name)) {
-          target[name] = src[name];
-        }
-      }
+      _each(src, function(value, name) {
+        target[name] = value;
+      });
     }
     return target;
   }
@@ -17,16 +24,16 @@
     return typeof obj === 'function';
   }
 
-  function _isDeep(obj) {
-    for (var name in obj) {
-      if (obj.hasOwnProperty(name)) {
-        if (typeof obj[name] === 'object') {
-          return true;
-        }
-      }
-    }
+  // return true if obj is a string
+  function _isString(obj) {
+    return typeof obj === 'string';
   }
 
+  // create and return the class
+  function _createClass(constructor, attributes) {
+    _extend(constructor.prototype, attributes);
+    return constructor;
+  }
 
   /**
    * Return a style set function that should be executed as
@@ -72,60 +79,58 @@
 
   /**
    * Normalize all stylesheet definitions
+   * - styles: the user provided stylesheet
+   * - builder: the associated Builder
    */
   function normalizeStyles(styles, builder) {
-    for (var key in styles) {
-      if (styles.hasOwnProperty(key)) {
-        builder._styles[key] = normalizeStyleAttributes(styles[key], builder);
-      }
-    }
+    _each(styles, function(style, key) {
+      builder._styles[key] = normalizeStyleAttributes(style, builder);
+    });
   }
 
   /**
    * Normalize the styleset attributes when registering stylesets.
    * Recurse function for normalizeStyles
+   * - styleset: the style attributes for a particular style class
+   * - builder: the associated Builder
    */
   function normalizeStyleAttributes(styleset, builder) {
     var name;
     if (_isFunction(styleset)) {
+      // user provided function so we need to give them the css context to work with
       return function(varRetriever) {
         return styleset.call(varRetriever, new StyleContext(varRetriever, builder));
       };
     }
 
-    if (styleset.attributes) {
-      // has nesting
-      var rtn = normalizeStyleAttributes(styleset.attributes);
-      for (name in styleset) {
-        if (styleset.hasOwnProperty(name) && name !== 'attributes') {
-          rtn[name] = normalizeStyleAttributes(styleset[name], builder);
+    var attr = styleset.attributes;
+    if (attr) {
+      // any nesting parent *must* include the "attributes" value
+      var rtn = normalizeStyleAttributes(attr);
+      _each(styleset, function(attr, name) {
+        if (name !== 'attributes') {
+          rtn[name] = normalizeStyleAttributes(attr, builder);
         }
-      }
+      });
       return rtn;
     } else {
-      if (_isDeep(styleset)) {
-        // nesting container
-        for (name in styleset) {
-          if (styleset.hasOwnProperty(name)) {
-            styleset[name] = normalizeStyleAttributes(styleset[name], builder);
-          }
-        }
-        return styleset;
-      } else {
-        // simple attributes
-        return function() { return styleset; };
-      }
+      // simple attributes
+      return function() { return styleset; };
     }
   }
 
 
-  var Builder = function(parent) {
+  /**
+   * The object returned when calling require('react-css-builder').register('...')
+   */
+  var Builder = _createClass(function(parent) {
     this._vars = {};
     this._mixins = {};
     this._styles = {};
     this.parent = parent;
-  };
-  _extend(Builder.prototype, {
+  }, {
+
+    // return
     css: function(paths) {
       return new StyleSelector(paths, this).css();
     },
@@ -144,7 +149,7 @@
     },
 
     vars: function(vars) {
-      if (typeof vars === 'string') {
+      if (_isString(vars)) {
         return this._vars[vars] || (this.parent && this.parent.vars(vars));
       }
 
@@ -154,50 +159,13 @@
   });
 
 
-  // globals
-  var builders = {},
-      main = new Builder();
-  function mainFunc(name) {
-    return function() {
-      main[name].apply(main, arguments);
-    };
-  }
-
-  var root = {
-    register: function(namespace, _styles) {
-      if (!_styles) {
-        _styles = namespace;
-        namespace = undefined;
-      }
-
-      var builder = namespace && builders[namespace];
-      if (!builder) {
-        builder = new Builder(main);
-        if (namespace) {
-          builder.namespace = namespace;
-          builders[namespace] = builder;
-        }
-      }
-
-      if (_isFunction(_styles)) {
-        _styles = _styles(rtn);
-      }
-      normalizeStyles(_styles, builder);
-      return builder;
-    },
-
-    vars: mainFunc('vars'),
-
-    mixin: mainFunc('mixin')
-  };
-
   /**
    * Class used as the return response from calling "css" on exports.
    * Allows for chained commands to be completed by the "val" method
    * to return the final styleset values.
    */
-  var StyleSelector = function(paths, builder) {
-    this.paths = normalizePaths(paths);
+  var StyleSelector = _createClass(function(path, builder) {
+    this.paths = normalizePaths(path);
     this.builder = builder;
     var self = this;
     this.varRetriever = {
@@ -205,8 +173,7 @@
         return (self._vars && self._vars[key]) || self.builder.vars(key);
       }
     };
-  };
-  _extend(StyleSelector.prototype, {
+  }, {
     attr: function(attrs) {
       this._attrs = _attrs;
       return this;
@@ -222,27 +189,49 @@
 
       var attrs = {};
       for (var i=0; i<this.paths.length; i++) {
-        return getStyleSet(this.paths[i], this.builder)(this.varRetriever);
+        _.extend(attrs, getStyleSet(this.paths[i], this.builder)(this.varRetriever));
       }
       _.extend(attrs, this._attrs);
       return attrs;
     }
   });
 
-  function normalizePaths(paths) {
-    return paths && (Array.isArray(paths) ? paths : paths.split(/\s+/));
+  var pathCache = {},
+      nestingMatchPattern = /[^\s,]+\s*\[[^\]]+\]/g,
+      nestingChildPattern = /^([^\[\s]+)\s*\[([^\]]+)/;
+
+  /**
+   * Normalize the css selector path
+   * multiple classes can be included and separated with whitespace or comma
+   * multiple nested classes have a shorthand of parent[child1 child2 ...] (children separated with space or comma)
+   * For example foo, a[b c] d[e,f], bar = ['foo', 'a.b', 'a.c', 'd.e', 'd.f', 'bar']
+   */
+  function normalizePaths(path) {
+    var rtn = pathCache[path];
+    if (!rtn) {
+      var result = path.replace(nestingMatchPattern, function(val) {
+        var match = val.match(nestingChildPattern),
+            parts = match[2].split(/[\s,]+/g),
+            rtn = '';
+        for (var i=0; i<parts.length; i++) {
+          rtn += (' ' + match[1] + '.' + parts[i]);
+        }
+        return rtn; 
+      });
+      rtn = pathCache[path] = result.split(/[,\s]+/g);
+    }
+    return rtn;
   }
-  
+
 
   /**
    * The style context object provided to styleset functions
    */
-  var StyleContext = function(varRetriever, builder) {
+  var StyleContext = _createClass(function(varRetriever, builder) {
     this.varRetriever = varRetriever;
     this.builder = builder;
     this.attrs = {};
-  };
-  _extend(StyleContext.prototype, {
+  }, {
     include: function(path) {
       _extend(this.attrs, getStyleSet(path, this.builder)(this.varRetriever));
       return this;
@@ -257,13 +246,42 @@
       return this;
     },
     val: function(attr) {
-      if (attr) {
-        return _extend(this.attrs, attr);
-      } else {
-        return this.attrs;
-      }
-      
+      return _extend(this.attrs, attr);
     }
   });
 
-  module.exports = root;
+
+  // global cache
+  var builders = {},
+      main = new Builder();
+
+  // wrapper function to ensure the context is the main Builder
+  function mainFunc(name) {
+    return function() {
+      main[name].apply(main, arguments);
+    };
+  }
+
+  module.exports = {
+    register: function(namespace, _styles) {
+      if (!_styles) {
+        _styles = namespace;
+        namespace = undefined;
+      }
+
+      var builder = namespace && builders[namespace];
+      if (!builder) {
+        builder = new Builder(main);
+        if (namespace) {
+          builder.namespace = namespace;
+          builders[namespace] = builder;
+        }
+      }
+
+      normalizeStyles(_styles, builder);
+      return builder;
+    },
+
+    vars: mainFunc('vars'),
+    mixin: mainFunc('mixin')
+  };
