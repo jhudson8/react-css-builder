@@ -28,7 +28,7 @@ This is a CommonJS component only, you simply need to require ```react-css-build
 npm install --save react-css-builder
 ```
 
-API
+API: Objects
 -------------
 ### react-css-builder
 This is the object returned when calling ```require('react-css-builder')```
