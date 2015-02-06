@@ -115,11 +115,17 @@ var myStyle = stylesheet.get('myStyleClass').attr({color: 'white'}).css();
 // will be {color: 'white', backgroundColor: 'black'}
 ```
 
-
 #### vars(variables)
 * ***variables***: Object specifying additional variables to be made accessable to the styleset function or referenced mixin functions as ```this.get("varName")```
 
 See [variables usage](#project/jhudson8/react-css-builder/section/Usage/Variables) for more details.
+
+
+#### css()
+Return the style attributes object created using the StylesetBuilder.
+
+See [variables usage](#project/jhudson8/react-css-builder/section/Usage/Variables) or [mixins usage](#project/jhudson8/react-css-builder/section/Usage/Mixins) for more details.
+
 
 
 ### StyleContext
@@ -245,15 +251,29 @@ See [Mixins API](#project/jhudson8/react-css-builder/method/react-css-builder/mi
 
 Mixins can return any number of attributes that should be applied to a styleset.
 
+Mixins can be registered [globally](#project/jhudson8/react-css-builder/method/react-css-builder/mixin) or scoped to a [single stylesheet](#project/jhudson8/react-css-builder/method/Stylesheet/mixin?focus=outline)
+```
+  // the mixin can have any number of arguments provided when the mixin is referenced
+
+  css.mixin('vendor-prefix', function(name, value) {
+
+    // for example only, a smarter impl would eval the user agent to include the appropriate prefix
+    var rtn = {};
+    // if you have underscore
+    _.each(['O', 'Webkit', 'ms', 'Moz'], function(prefix) {
+      rtn[prefix + name] = value;
+    });
+    rtn[name] = value;
+    return rtn;
+  });
+```
+
 ```
   var stylesheet = require('react-css-builder').register({
 
     myClassUsingMixins: function(css) {
       return css
-        .mixin('the-mixin-name', param1, param2, ...)
-        .attr({
-          // include any additional attributes
-        })
+        .mixin('vendor-prefix', 'borderRadius', '3px')
         .val();
     }
   });
@@ -262,6 +282,19 @@ Mixins can return any number of attributes that should be applied to a styleset.
 
 #### Variables
 See [Variables API](#project/jhudson8/react-css-builder/method/react-css-builder/vars) to understand how to register variables
+
+Variables can be set [globally](#project/jhudson8/react-css-builder/method/react-css-builder/vars) or scoped to a [single stylesheet](#project/jhudson8/react-css-builder/method/Stylesheet/vars) or set when [getting individual styles attributes](#project/jhudson8/react-css-builder/method/StylesetBuilder/vars?focus=outline).
+
+```
+  // variables can be set globally
+  require('react-css-builder').vars({ myGlobalVar: 'foo'});
+
+  // variables can be set on a specific stylesheet
+  stylesheet.vars({ myStylesheetVar: 'bar'});
+
+  // variables can be set when referencing the styleset directly
+  var myStyle = stylesheet.get('myClassUsingMixins').vars({ verySpecificVar: 'baz'}).css();
+```
 
 Variables can be referenced in a styleset definition using ```this.get("varName")```
 ```
@@ -273,15 +306,6 @@ Variables can be referenced in a styleset definition using ```this.get("varName"
       }
     }
   });
-
-  // variables can be set globally
-  require('react-css-builder').vars({ border: 'solid 2px #000'});
-
-  // variables can be set on a specific stylesheet
-  stylesheet.vars({ border: 'solid 2px #000'});
-
-  // variables can be set when referencing the styleset directly
-  var myStyle = stylesheet.get('myClassUsingMixins').vars({ border: 'solid 2px #000'}).css();
 ```
 
 
