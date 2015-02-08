@@ -2,7 +2,36 @@
 
 ## Development
 
-[Commits](https://github.com/jhudson8/react-css-builder/compare/v0.1.0...master)
+[Commits](https://github.com/jhudson8/react-css-builder/compare/v0.2.0...master)
+
+## v0.2.0 - February 8th, 2015
+- API Changes - 932eb52
+
+ReactCSSBuilder.register -> ReactCSSBuilder.create
+StyleContext.val -> StyleContext.css
+
+```
+    require('react-css-builder').register({
+      myClass: function(css) {
+        return css.
+          // stuff with StyleContext
+          .val();
+      }
+    });
+```
+should now be
+```
+    require('react-css-builder').create({
+      myClass: function(css) {
+        return css.
+          // stuff with StyleContext
+          .css();
+      }
+    });
+```
+
+
+[Commits](https://github.com/jhudson8/react-css-builder/compare/v0.1.0...v0.2.0)
 
 ## v0.1.0 - February 4th, 2015
 - add enhanced styleset selectors - b3c5eb8
