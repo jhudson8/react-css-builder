@@ -12,20 +12,20 @@ css.mixin('radius', function(radius) {
   };
 });
 
-var privateTestCss = css.register({
+var privateTestCss = css.create({
   test1: {
     minWidth: 1
   }
 });
 
 
-var hierarchyTestCss = css.register('foo', {
+var hierarchyTestCss = css.create('foo', {
   bar: {
     height: 10
   }
 });
 
-var hierarchyTestCss = css.register('hierarchy', {
+var hierarchyTestCss = css.create('hierarchy', {
   top: {
     attributes: {},
     bottom: {
@@ -44,7 +44,7 @@ var hierarchyTestCss = css.register('hierarchy', {
   }
 });
 
-var callbacksTestCss = css.register('callbacks', {
+var callbacksTestCss = css.create('callbacks', {
   base1: {
     border: 1
   },
@@ -54,19 +54,19 @@ var callbacksTestCss = css.register('callbacks', {
     };
   },
   test1: function(css) {
-    return css.include('base1').val();
+    return css.include('base1').css();
   },
   test2: function(css) {
     return css
       .include('base1')
       .include('base2')
       .include('foo.bar')
-      .val();
+      .css();
   },
   test3: function(css) {
     return css
       .include('base1')
-      .val({
+      .css({
         height: 1,
         width: this.get('someVar')
       });
@@ -74,7 +74,7 @@ var callbacksTestCss = css.register('callbacks', {
   test4: function(css) {
     return css
       .mixin('radius', 3)
-      .val({
+      .css({
         height: 1
       });
   }

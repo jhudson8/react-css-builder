@@ -245,7 +245,7 @@
       _extend(this.attrs, mixin.apply(this.varRetriever, args));
       return this;
     },
-    val: function(attr) {
+    css: function(attr) {
       return _extend(this.attrs, attr);
     }
   });
@@ -263,7 +263,7 @@
   }
 
   module.exports = {
-    register: function(namespace, _styles) {
+    create: function(namespace, _styles) {
       if (!_styles) {
         _styles = namespace;
         namespace = undefined;

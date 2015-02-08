@@ -8,7 +8,8 @@ You can create a javascript stylesheet similar to what you would see with a CSS 
 
 ```
 // *very* simple example - more advance capabilities are not demonstrated here
-var stylesheet = require('react-css-builder').register({
+var ReactCSSBuilder = require('react-css-builder');
+var stylesheet = ReactCSSBuilder.create({
   myClass: {
     color: 'white'
   }
@@ -23,7 +24,7 @@ render: function() {
 
 Installation
 --------------
-This is a CommonJS component only, you simply need to require ```react-css-builder``` and adding the component to ```package.json```
+This is a CommonJS component only, include ```react-css-builder``` as a dependency.
 ```
 npm install --save react-css-builder
 ```
@@ -60,7 +61,7 @@ See [mixin usage](#project/jhudson8/react-css-builder/section/Usage/Mixins) for 
 
 
 ### Stylesheet
-This is the object returned when calling ```require('react-css-builder').register(...)```
+This is the object returned when calling ```ReactCSSBuilder.create(...)```
 
 
 #### css(className)
@@ -106,7 +107,7 @@ This is the object returned when calling ```get``` from a [StylesetBuilder](#pro
 * ***styleAttributes***: Additional attributes that should be included with the attributes defined with the styleset defined by the class name.
 
 ```
-var stylesheet = require('...').register({
+var stylesheet = require('...').create({
   myStyleClass: {
     backgroundColor: 'black'
   }
@@ -151,14 +152,14 @@ Include all of the attributes returned by a registered by a mixin
 See [mixin usage](#project/jhudson8/react-css-builder/section/Usage/Mixins) for details.
 
 
-#### val()
+#### css()
 Called when all attribute inclusions are complete to return the styleset attributes.
 ```
-var stylesheet = require('...').register({
+var stylesheet = require('...').create({
   myStyleClass: function(css) {
     return css
       // add any attributes or mixins
-      .val();
+      .css();
   }
 });
 ```
@@ -171,7 +172,7 @@ Sections
 The [register](#project/jhudson8/react-css-builder/method/react-css-builder/register) method is used to create a new stylesheet that can be used.
 
 ```
-module.exports = require('react-css-builder').register('optional-namespace', {
+module.exports = ReactCSSBuilder.create('optional-namespace', {
   // include any stylesets
   myCssClass: {
     color: 'white'
@@ -204,7 +205,7 @@ Function which returns results from a [StyleContext](#project/jhudson8/react-css
       .mixin(...)
       .include(...)
       .attr(...)
-      .val();
+      .css();
   }
 ```
 
@@ -269,12 +270,12 @@ Mixins can be registered [globally](#project/jhudson8/react-css-builder/method/r
 ```
 
 ```
-  var stylesheet = require('react-css-builder').register({
+  var stylesheet = ReactCSSBuilder.create({
 
     myClassUsingMixins: function(css) {
       return css
         .mixin('vendor-prefix', 'borderRadius', '3px')
-        .val();
+        .css();
     }
   });
 ```
@@ -287,7 +288,7 @@ Variables can be set [globally](#project/jhudson8/react-css-builder/method/react
 
 ```
   // variables can be set globally
-  require('react-css-builder').vars({ myGlobalVar: 'foo'});
+  ReactCSSBuilder.vars({ myGlobalVar: 'foo'});
 
   // variables can be set on a specific stylesheet
   stylesheet.vars({ myStylesheetVar: 'bar'});
@@ -298,7 +299,7 @@ Variables can be set [globally](#project/jhudson8/react-css-builder/method/react
 
 Variables can be referenced in a styleset definition using ```this.get("varName")```
 ```
-  var stylesheet = require('react-css-builder').register({
+  var stylesheet = ReactCSSBuilder.create({
 
     myClassUsingMixins: function() {
       return {
@@ -312,7 +313,7 @@ Variables can be referenced in a styleset definition using ```this.get("varName"
 #### Includes
 It is possible to merge other styleset attributes using ```include```.  Stylesets can be referenced in the current stylesheet or in another stylesheet if the styleset name is prefixed with a ```.```.
 ```
-  var stylesheet = require('react-css-builder').register({
+  var stylesheet = ReactCSSBuilder.create({
 
     someOtherClass: {
       width: '100%'
@@ -324,7 +325,7 @@ It is possible to merge other styleset attributes using ```include```.  Styleset
         .attr({
           // include any additional attributes
         })
-        .val();
+        .css();
     }
   });
 ```
