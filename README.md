@@ -9,6 +9,10 @@ You can create a javascript stylesheet similar to what you would see with a CSS 
 [View the installation and API docs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-css-builder)
 
 
+## Examples
+take a look at some [examples](https://github.com/jhudson8/react-css-builder/blob/master/examples/example.js)
+
+
 ### Other React projects that may interest you
 
 * [jhudson8/react-mixin-manager](https://github.com/jhudson8/react-mixin-manager)
