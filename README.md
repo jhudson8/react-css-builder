@@ -2,7 +2,7 @@ react-css-builder
 ==============
 CSS builder for creating inline react component style objects
 
-If you want React to do native well, you need to use inline styles.  But, you can still get the DRY and maintainability benefits of an external stylesheet with react-css-builder.
+If you want React to [do native well](https://www.youtube.com/watch?v=7rDsRXj9-cU)), you need to use inline styles.  But, you can still get the DRY and maintainability benefits of an external stylesheet with react-css-builder.
 
 The advantages of creating the CSS attributes using javascript are
 
