@@ -8,7 +8,7 @@ The advantages of creating the CSS attributes using javascript are
 
 * You can use runtime variables
 * You can use scoped (global, stylesheet specific and style reference specific)
-* There is a large byte savings if you use a lot of mixins and class inheritance
+* There is a large byte savings if you use a lot of mixins and class inheritance as compared to css preprocessor output
 * You bypass some browser CSS issues because the style attributes end up as an inline style attribute
 
 [View the installation and API docs](http://jhudson8.github.io/fancydocs/index.html#project/jhudson8/react-css-builder)
