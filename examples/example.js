@@ -71,7 +71,8 @@ var stylesheet = module.exports = reactCSSBuilder.create({
       .attr({
         // include additional attributes to be returned
         border: this.get('primaryBorder')
-      });
+      })
+      .css();
   }
 });
 
