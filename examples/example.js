@@ -41,7 +41,7 @@ var stylesheet = module.exports = reactCSSBuilder.create({
     }
   },
 
-  // include the styles from "myClassGroup" and "myClassGroup.groupChild1"
+  // include the styles from other classes into this one
   myClassWithIncludes: function(css) {
     return css
       .include('myClass')
