@@ -10,7 +10,7 @@ var stylesheet = module.exports = reactCSSBuilder.create({
     margin: '6px'
   },
 
-  // class hierarchies can be as many levels deep as you with.  each parent object
+  // class hierarchies can be as many levels deep as you want.  each parent object
   // must have an "attributes" property which references the style returned
   // for the parent if requested
   myClassGroup: {
