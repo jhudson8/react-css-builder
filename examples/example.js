@@ -76,3 +76,6 @@ var styleAttributes = stylesheet.css('myClassWithEverything');
 
 // now override the border variable (used by the myClassWithEverything) styleset definition
 var styleAttributes = stylesheet.get('myClassWithEverything').vars({ primaryBorder: 'solid 1px #000' }).css();
+
+
+<MyReactComponent style={styleAttributes}/>
