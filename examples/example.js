@@ -4,13 +4,16 @@
 var reactCSSBuilder = require('react-css-builder');
 var stylesheet = module.exports = reactCSSBuilder.create({
 
+  // the simplest style class definition
   myClass: {
-    border: 'solid 1px #000'
+    border: 'solid 1px #000',
+    margin: '6px'
   },
 
+  // class hierarchies can be as many levels deep as you with.  each parent object
+  // must have an "attributes" property which references the style returned
+  // for the parent if requested
   myClassGroup: {
-    // any class group must have an "attributes" property
-    // it's what is returned with // retrieved using stylesheet.css('myClassGroup')
     attributes: {},
 
     // retrieved using stylesheet.css('myClassGroup.groupChild1')
@@ -22,6 +25,20 @@ var stylesheet = module.exports = reactCSSBuilder.create({
     groupChild2: {
       margin: "2px"
     },
+
+    moreNesting: {
+      attributes: {
+        color: '#fff'
+      },
+
+      grandChild1: {
+        padding: '3px'
+      },
+
+      grandChild2: {
+        padding: '4px'
+      }
+    }
   },
 
   // include the styles from "myClassGroup" and "myClassGroup.groupChild1"
@@ -77,5 +94,5 @@ var styleAttributes = stylesheet.css('myClassWithEverything');
 // now override the border variable (used by the myClassWithEverything) styleset definition
 var styleAttributes = stylesheet.get('myClassWithEverything').vars({ primaryBorder: 'solid 1px #000' }).css();
 
-
+// this is how you apply the styles to a React component
 <MyReactComponent style={styleAttributes}/>
