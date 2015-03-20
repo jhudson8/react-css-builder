@@ -23,6 +23,5 @@ take a look at some [examples](https://github.com/jhudson8/react-css-builder/blo
 * [jhudson8/react-mixin-manager](https://github.com/jhudson8/react-mixin-manager)
 * [jhudson8/react-backbone](https://github.com/jhudson8/react-backbone)
 * [jhudson8/react-events](https://github.com/jhudson8/react-events)
-* [jhudson8/react-semantic-ui](https://github.com/jhudson8/react-semantic-ui)
 * [jhudson8/react-chartjs](https://github.com/jhudson8/react-chartjs)
-* [jhudson8/gulp-mocha-tdd](https://github.com/jhudson8/gulp-mocha-tdd) (React friendly)
+
